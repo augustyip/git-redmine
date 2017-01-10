@@ -44,8 +44,6 @@ if not project_url:
     print "    git config redmine.projectUrl '<project url>'"
     quit(1)
 
-user_id = Popen(["git", "config", "redmine.userId"], stdout=PIPE).communicate()[0].strip()
-
 usage = "usage: %prog [options] keyword"
 parser = OptionParser(usage)
 parser.add_option("--done-ratio", dest="done_ratio", type="int",
@@ -125,12 +123,35 @@ if args:
         print issue["issue"]["description"]
         quit(0)
 
-f = urllib2.urlopen('%s/issues.json?limit=100&key=%s%s' % (project_url, api_key, '&assigned_to_id=' + user_id if user_id else ''))
+f = urllib2.urlopen('%s/issues.json?limit=100&sort=fixed_version:desc&assigned_to_id=me&status_id=*&key=%s' % (project_url, api_key))
 data = f.read()
 j = json.loads(data)
-issues = j["issues"]
-issues.sort(cmp=lambda x,y: cmp(y["priority"]["id"], x["priority"]["id"]))
-for issue in issues:
-    print "%3d%% %s %s [%s] %s" % (issue["done_ratio"], issue["priority"]["id"], ('#%d' % issue["id"]).ljust(5), issue["status"]["name"], issue["subject"])
+issues = {}
+parent_issues = []
+fixed_version = []
+# issues.sort(cmp=lambda x,y: cmp(y["priority"]["id"], x["priority"]["id"]))
+for issue in j["issues"]:
+    issues[issue['id']] = issue
+    if 'parent' in issue and len(fixed_version) < 2:
+        parent_issues.append(issue['parent']['id'])
+        if issue['fixed_version']['id'] not in fixed_version:
+            fixed_version.append(issue['fixed_version']['id'])
+
+parent_issues = list(set(parent_issues))
+# parent_issues.sort(reverse=True)
+
+for issue_id in parent_issues:
+    f = urllib2.urlopen('%s/issues/%d.json?include=children&key=%s' % (project_url, issue_id, api_key))
+    data = f.read()
+    j = json.loads(data)
+    i = j['issue']
+    print "%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name'])
+    if 'children' in i:
+        for child in i['children']:
+            if child['id'] in issues:
+                c = issues[child['id']]
+                print " +-- %s [%s] %s" % (('#%d' % c["id"]).ljust(5), c['status']['name'], c['subject'])
+    print ''
+
 
 quit(0)
