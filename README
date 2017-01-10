@@ -13,7 +13,7 @@ Install
 $ git config --global redmine.apiKey xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 3. Configure Redmine URL.
-$ git config redmine.projectUrl http://YOUR.REDMINE.URL
+$ git config --global redmine.projectUrl http://YOUR.REDMINE.URL
 
 
 Tutorial
