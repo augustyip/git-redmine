@@ -123,19 +123,22 @@ if args:
         print issue["issue"]["description"]
         quit(0)
 
-f = urllib2.urlopen('%s/issues.json?limit=100&sort=fixed_version:desc&assigned_to_id=me&status_id=*&key=%s' % (project_url, api_key))
+f = urllib2.urlopen('%s/issues.json?limit=200&sort=fixed_version:desc&assigned_to_id=me&status_id=*&key=%s' % (project_url, api_key))
 data = f.read()
 j = json.loads(data)
 issues = {}
 parent_issues = []
 fixed_version = []
 # issues.sort(cmp=lambda x,y: cmp(y["priority"]["id"], x["priority"]["id"]))
+
+for issue in j["issues"]:
+    if len(fixed_version) < 2 and issue['fixed_version']['id'] not in fixed_version:
+        fixed_version.append(issue['fixed_version']['id'])
+
 for issue in j["issues"]:
     issues[issue['id']] = issue
-    if 'parent' in issue and len(fixed_version) < 2:
+    if 'parent' in issue and issue['fixed_version']['id'] in fixed_version:
         parent_issues.append(issue['parent']['id'])
-        if issue['fixed_version']['id'] not in fixed_version:
-            fixed_version.append(issue['fixed_version']['id'])
 
 parent_issues = list(set(parent_issues))
 # parent_issues.sort(reverse=True)
@@ -145,6 +148,7 @@ for issue_id in parent_issues:
     data = f.read()
     j = json.loads(data)
     i = j['issue']
+    print "%s/issues/%d" % (project_url, i['id'])
     print "%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name'])
     if 'children' in i:
         for child in i['children']:
