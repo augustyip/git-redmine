@@ -12,14 +12,13 @@ Install
 2. Configure API key of your Redmine account. API key is found in account menu in the redmine.
 $ git config --global redmine.apiKey xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-3. Configure Redmine URL of the project.
-$ cd /repos/YOUR-PROJECT
-$ git config redmine.projectUrl http://SAMPLE.COM/repos/YOUR-PROJECT
+3. Configure Redmine URL.
+$ git config redmine.projectUrl http://YOUR.REDMINE.URL
 
 
 Tutorial
 
-* List issues of the Redmine of your project
+* List issues which assigned to you(limited latest two sprints)
 $ git redmine
 
 * Show details of a issue
