@@ -1,3 +1,5 @@
+forked from [coiled-coil/git-redmine](https://github.com/coiled-coil/git-redmine)
+
 Git-Redmine
 
 Git-Redmine is integration tool between Git and Redmine, written in Python.
