@@ -137,7 +137,7 @@ for issue in j["issues"]:
 
 for issue in j["issues"]:
     issues[issue['id']] = issue
-    if 'parent' in issue and issue['fixed_version']['id'] in fixed_version:
+    if 'parent' in issue and 'fixed_version' in issue and issue['fixed_version']['id'] in fixed_version:
         parent_issues.append(issue['parent']['id'])
 
 parent_issues = list(set(parent_issues))
