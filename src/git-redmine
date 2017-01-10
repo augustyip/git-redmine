@@ -44,6 +44,8 @@ if not project_url:
     print "    git config redmine.projectUrl '<project url>'"
     quit(1)
 
+user_id = Popen(["git", "config", "redmine.userId"], stdout=PIPE).communicate()[0].strip()
+
 usage = "usage: %prog [options] keyword"
 parser = OptionParser(usage)
 parser.add_option("--done-ratio", dest="done_ratio", type="int",
@@ -123,7 +125,7 @@ if args:
         print issue["issue"]["description"]
         quit(0)
 
-f = urllib2.urlopen('%s/issues.json?limit=100&key=%s' % (project_url, api_key))
+f = urllib2.urlopen('%s/issues.json?limit=100&key=%s%s' % (project_url, api_key, '&assigned_to_id=' + user_id if user_id else ''))
 data = f.read()
 j = json.loads(data)
 issues = j["issues"]
