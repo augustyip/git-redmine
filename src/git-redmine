@@ -132,7 +132,7 @@ fixed_version = []
 # issues.sort(cmp=lambda x,y: cmp(y["priority"]["id"], x["priority"]["id"]))
 
 for issue in j["issues"]:
-    if len(fixed_version) < 2 and issue['fixed_version']['id'] not in fixed_version:
+    if len(fixed_version) < 2 and 'fixed_version' in issue and issue['fixed_version']['id'] not in fixed_version:
         fixed_version.append(issue['fixed_version']['id'])
 
 for issue in j["issues"]:
