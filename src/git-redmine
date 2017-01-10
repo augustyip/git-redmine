@@ -117,9 +117,7 @@ if args:
         print "%s : %s" % ("Priority".rjust(16), issue["issue"]["priority"]["name"])
         print "%s : %s" % ("Tracker".rjust(16), issue["issue"]["tracker"]["name"])
         print "%s : %d%%" % ("Done Ratio".rjust(16), issue["issue"]["done_ratio"])
-        print "%s : %s" % ("Assigned To".rjust(16), issue["issue"]["assigned_to"]["name"])
         print "%s : %s" % ("Assigned To".rjust(16), (issue["issue"]["assigned_to"]["name"] if "assigned_to" in issue["issue"] else "(none)"))  # fixed the case nobody is assigned to the issue
-
         print "%s : %s" % ("Subject".rjust(16), issue["issue"]["subject"])
         print "------"
         print issue["issue"]["description"]
