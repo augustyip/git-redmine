@@ -93,6 +93,8 @@ if args:
             print "Issue number is absent:"
             print "    git redmine commit <issue number>"
             quit(1)
+
+        # TODO: support issue ids
         issue_id = int(args[1])
         issue = get_issue(issue_id)
 
