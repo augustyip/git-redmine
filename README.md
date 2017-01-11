@@ -28,3 +28,4 @@ $ git redmine 1234
 * Commit using with commit message consist on the issue subject and issue ID
 $ git redmine commit 1234
 
+![Git Redmine](https://raw.githubusercontent.com/augustyip/git-redmine/master/Screen%20Shot.png)
