@@ -31,6 +31,8 @@ import os
 from urlparse import urlparse
 import httplib
 import urllib
+from termcolor import colored, cprint
+
 
 api_key = Popen(["git", "config", "redmine.apiKey"], stdout=PIPE).communicate()[0].strip()
 if not api_key:
@@ -151,6 +153,8 @@ for issue in j["issues"]:
 
 parent_issues = list(set(parent_issues))
 # parent_issues.sort(reverse=True)
+#
+# TODO: base issue status to change the color
 
 for issue_id in parent_issues:
     f = urllib2.urlopen('%s/issues/%d.json?include=children&key=%s' % (project_url, issue_id, api_key))
@@ -158,7 +162,7 @@ for issue_id in parent_issues:
     j = json.loads(data)
     i = j['issue']
     print "%s/issues/%d" % (project_url, i['id'])
-    print "%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name'])
+    cprint("%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name']), 'white', 'on_blue')
     if 'children' in i:
         for child in i['children']:
             if child['id'] in issues:
