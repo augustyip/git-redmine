@@ -156,18 +156,34 @@ parent_issues = list(set(parent_issues))
 #
 # TODO: base issue status to change the color
 
+color = {
+    1: None,
+    2: None,
+    3: None,
+    4: None,
+    5: None,
+}
+
+on_color = {
+    1: None,
+    2: 'on_yellow',
+    3: 'on_green',
+    4: 'on_red',
+    5: 'on_cyan',
+}
+
 for issue_id in parent_issues:
     f = urllib2.urlopen('%s/issues/%d.json?include=children&key=%s' % (project_url, issue_id, api_key))
     data = f.read()
     j = json.loads(data)
     i = j['issue']
-    print "%s/issues/%d" % (project_url, i['id'])
-    cprint("%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name']), 'white', 'on_blue')
+    cprint("%s/issues/%d" % (project_url, i['id']), None, None, ['underline'])
+    cprint("%s %s [%s] %s <<%s>>" % (i['project']['name'], ('#%d' % i["id"]).ljust(5), i['status']['name'], i['subject'], i['fixed_version']['name']), None, None, ['reverse'])
     if 'children' in i:
         for child in i['children']:
             if child['id'] in issues:
                 c = issues[child['id']]
-                print " +-- %s [%s] %s" % (('#%d' % c["id"]).ljust(5), c['status']['name'], c['subject'])
+                cprint(" +-- %s [%s] %s" % (('#%d' % c["id"]).ljust(5), c['status']['name'], c['subject']), color[c['status']['id']], on_color[c['status']['id']])
     print ''
 
 
