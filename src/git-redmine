@@ -94,22 +94,29 @@ if args:
             print "    git redmine commit <issue number>"
             quit(1)
 
-        # TODO: support issue ids
-        issue_id = int(args[1])
-        issue = get_issue(issue_id)
+        issue_ids = []
+        subjects = []
+        for issue_id in args[1:]:
+            issue_id = int(issue_id)
+            if issue_id > 0 :
+                issue = get_issue(issue_id)
+                issue_ids.append('#%s' % (issue_id))
+                subjects.append(issue['issue']['subject'].encode('utf-8'))
 
         tmp_file = tempfile.mkstemp()
         with os.fdopen(tmp_file[0], "w") as fh:
-            fh.write("refs #%d: %s" % (issue['issue']['id'], issue['issue']['subject'].encode('utf-8')))
+            fh.write('refs %s: %s' % (', '.join(issue_ids), '; '.join(subjects)))
             fh.close()
         retcode = call(["git", "commit", "-v", "--edit", "--file", tmp_file[1]])
         os.remove(tmp_file[1])
 
         if retcode == 0:
-            if options.done_ratio:
-                update_issue(issue_id, {'issue':{'done_ratio':options.done_ratio}})
-            if options.status:
-                update_issue(issue_id, {'issue':{'status_id':options.status}})
+            for issue_id in args[1:]:
+                issue_id = int(issue_id)
+                if issue_id > 0 and options.done_ratio:
+                    update_issue(issue_id, {'issue':{'done_ratio':options.done_ratio}})
+                if issue_id > 0 and options.status:
+                    update_issue(issue_id, {'issue':{'status_id':options.status}})
 
         quit(retcode)
 
