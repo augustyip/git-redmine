@@ -165,11 +165,11 @@ color = {
 }
 
 on_color = {
-    1: None,
+    1: 'on_cyan',
     2: 'on_yellow',
     3: 'on_green',
     4: 'on_red',
-    5: 'on_cyan',
+    5: 'on_magenta',
 }
 
 for issue_id in parent_issues:
