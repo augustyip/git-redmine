@@ -85,10 +85,6 @@ def update_issue(id, data):
         print r1.status, r1.reason
         quit(1)
 
-    data1 = r1.read()
-    #return json.loads(data1)
-    print data1
-
 if args:
     if args[0] == 'commit':
         if len(args) < 2:
@@ -138,10 +134,10 @@ if args:
 f = urllib2.urlopen('%s/issues.json?limit=200&sort=fixed_version:desc&assigned_to_id=me&status_id=*&key=%s' % (project_url, api_key))
 data = f.read()
 j = json.loads(data)
+
 issues = {}
 parent_issues = []
 fixed_version = []
-# issues.sort(cmp=lambda x,y: cmp(y["priority"]["id"], x["priority"]["id"]))
 
 for issue in j["issues"]:
     if len(fixed_version) < 2 and 'fixed_version' in issue and issue['fixed_version']['id'] not in fixed_version:
@@ -153,10 +149,8 @@ for issue in j["issues"]:
         parent_issues.append(issue['parent']['id'])
 
 parent_issues = list(set(parent_issues))
-# parent_issues.sort(reverse=True)
-#
-# TODO: base issue status to change the color
 
+# TODO: base issue status to change the color
 color = {
     1: None,
     2: None,
